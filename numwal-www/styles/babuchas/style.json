@@ -1,0 +1,16 @@
+{
+	"wallpaper" : {
+		"background-crop-left-px" : 600,
+		"background-crop-top-px" : 600, 
+		"background-image-file" : "babuchas-marrakech.jpg"
+	},
+	"number" : {
+		"background-color" : "#FFFFFFDD",
+		"color" : "#0000000FF",
+		"font-file" : "ComicNeue-Angular_Bold.otf",
+		"font-size-pt" : 300,
+		"left-px": 1100,
+		"top-px" : 240,
+		"max-digits" : 2
+	}
+}

@@ -1,0 +1,9 @@
+# PHP runtime stuff
+*/tmp/
+
+# Composer variable files
+composer.lock
+vendor # directory for Composer packages, change as needed 
+
+# Vim
+.*.swp

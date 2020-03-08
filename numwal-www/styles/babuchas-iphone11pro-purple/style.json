@@ -1,0 +1,13 @@
+{
+	"wallpaper" : {
+		"background-crop-left-px" : 0,
+		"background-crop-top-px" : 1100,
+		"background-crop-width-px" : 600,
+		"background-crop-height-px" :1132 
+	},
+	"number" : {
+		"background-color" : "#553355FF",
+		"color" : "#FFFFFF"
+	}
+}
+

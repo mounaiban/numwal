@@ -1,0 +1,13 @@
+{
+	"wallpaper" : {
+		"background-crop-left-px" : 0,
+		"background-crop-top-px" : 0,
+		"width-px" : 1125,
+		"height-px" : 2436
+	},
+	"number" : {
+		"font-size-pt" : 900,
+		"left-px" : 560,
+		"top-px" : 1790
+	}
+}

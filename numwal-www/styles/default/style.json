@@ -1,0 +1,19 @@
+{
+	"wallpaper" : {
+		"background-color" : "#228899",
+		"height-px" : 720,
+		"width-px" : 1280
+	},
+	"number" : {
+		"background-color" : "#FFDD22FF",
+		"color" : "#AA0000AA",
+		"font-file" : "OpenDyslexic-Bold.otf",
+		"font-size-pt" : 320,
+		"im-font-weight" : 900,
+		"im-gravity" : 2,
+		"left-px" : 640,
+		"top-px" : 500,
+		"max-digits" : 4,
+		"pad-zeroes" : "false"
+	}
+}
