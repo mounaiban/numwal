@@ -97,14 +97,14 @@ This is the background picture used in the *babuchas* wallpaper styles.
 #### Comic Neue
 Copyright &copy;2014, 2016 Craig Rozynski. This font software is licensed under the **SIL Open Font License, Version 1.1**.
 
-[Website](http://comicneue.com) [GitHub repo](https://github.com/crozynski/comicneue)
+[Website](http://comicneue.com) | [GitHub repo](https://github.com/crozynski/comicneue)
 
 This font family is used in the numbers in the *babuchas* wallpaper styles.
 
 #### OpenDyslexic 
 Copyright &copy;2019 Abbie Gonzalez. This font software is licensed under the **SIL Open Font License, Version 1.1**.
 
-[Website](https://opendyslexic.org) [GitHub repo](https://github.com/antijingoist/opendyslexic)
+[Website](https://opendyslexic.org) | [GitHub repo](https://github.com/antijingoist/opendyslexic)
 
 The SIL-OFL re-release of this font family is used for the numbers in the *default* wallpaper style.
 
