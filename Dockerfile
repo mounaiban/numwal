@@ -24,13 +24,18 @@ EXPOSE 9010/tcp
 CMD ["php", "-S", "0.0.0.0:9010", "-t", "/usr/src/numwal-www"]
 
 
-# TODO: Find a means of running Composer and the PHP development 
-# server as a non-root user.
+# TODO: Find a rootless means of running Composer and the 
+# development server
 
-# NOTE: Images created from this Dockerfile may fail on the very
-# first run. If this happens, try restarting the container.
+# NOTE: Containers based on this image may fail on the very first run.
+# If this happens, try restarting the container.
 
-# PROTIP: Michele Locati's php-extension-installer script is
+# PROTIP: To maximise cache use, try to place steps that produce the
+# least frequent changes first. For example, an HTTP server that is 
+# normally updated quarterly should be installed before an application
+# which changes daily.
+
+# PROTIP: The php-extension-installer script by Michele Locati is
 # the surest way of creating Imagick-enabled PHP images known yet.
 # See the GitHub repository for more info:
 # https://github.com/mlocati/docker-php-extension-installer
