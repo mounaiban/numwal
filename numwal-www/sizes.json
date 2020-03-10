@@ -1,7 +1,14 @@
 {
+    "apple-iphone11" : [828, 1792, "Apple iPhone 11"],
+	"apple-iphone11pro" : [1125, 2436, "Apple iPhone 11 Pro"],
+	"apple-iphone11promax" : [1242, 2688, "Apple iPhone 11 Pro Max"],
 	"dci4k" : [4096, 2160, "DCI 4K"],
 	"fhd" : [1920, 1080, "ITU-R BT.709 Full HD"],
+	"google-pixel4" : [2280, 1080, "Google Pixel 4"],
+	"google-pixel4xl" : [3040, 1440, "Google Pixel 4 Pro"],
+	"huawei-p30" : [1080, 2340, "Huawei P30"],
 	"qvga" : [320, 240, "VGA 240 lines"],
+	"samsung-gs20" : [1440, 3200, "Samsung Galaxy S20 main screen"],
 	"vga" : [640, 480, "VGA 480 lines"],
 	"uhd4k" : [3840, 2160, "ITU-R BT.2020 4K"]
 }
