@@ -7,3 +7,6 @@ vendor # directory for Composer packages, change as needed
 
 # Vim
 .*.swp
+
+# TLS/SSL certificates and keys
+tls/*
