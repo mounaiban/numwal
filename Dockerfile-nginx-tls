@@ -1,0 +1,70 @@
+# Numwal Evaluation Dockerfile (on Nginx with TLS (SSL) support!)
+
+# NOTE: Both PHP-FPM and Nginx are used here, but only Nginx manages
+# to start automatically. The Docker exec command must be used to run
+# `php-fpm -D` inside the container on the first run for the container 
+# to work.
+# This shortcoming is being worked on, and any help would be greatly
+# appreciated.
+
+# This Dockerfile looks in the tls directory for keys. Please edit this file
+# as needed if the keys are in a different directory and/or under different 
+# names.
+
+FROM php:7-fpm-alpine
+
+# Install and setup Nginx
+RUN apk add nginx
+
+# Install Imagick (and setup dependencies while we are at it)
+# This grabs the php extension installer from mlocati's docker hub image
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin
+RUN install-php-extensions imagick
+
+# Prepare Numwal directories
+RUN mkdir /var/www/numwal-www/
+COPY numwal-www/composer.json /var/www/numwal-www/
+
+# Install composer, fetch F3
+WORKDIR /var/www/numwal-www/
+RUN apk add composer
+RUN composer upgrade 
+
+# Copy Numwal application files
+COPY numwal-www /var/www/numwal-www/
+
+# Copy configuration files and TLS keys
+# PROTIP: Edit the nginx configuration to sync with any changes
+# in paths and names!
+COPY conf/numwal-nginx.conf /etc/nginx/conf.d/
+COPY tls/numwal-private.pem /etc/ssl/private
+COPY tls/numwal.pem /etc/ssl/certs
+
+# Nginx stuff (that I haven't fully figured out)
+# Create nginx.pid to work around a 'no such file or directory' error
+RUN mkdir /run/nginx/
+RUN touch /run/nginx/nginx.pid
+# Pinched from the Nginx Plus Admin Guide 
+# https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-docker/
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+ && ln -sf /dev/stderr /var/log/nginx/error.log
+STOPSIGNAL SIGTERM
+
+# Container setup stuff
+EXPOSE 9443/tcp
+CMD ["nginx", "-g", "daemon off;"]
+
+
+
+# TODO: Use environment variables to make it easier to switch between
+# alternate Nginx configuration files and TLS keys from different files
+# in different directories,
+
+# TODO: Run Composer as normal user
+
+# TODO: Run container in read-only mode
+
+# PROTIP: The /etc/ssl/ directory is the default path by OpenSSL
+# to store TLS certificates and private keys. The /var/www directory
+# is the default path to host web server content on Alpine Linux.
+
