@@ -20,8 +20,8 @@ RUN install-php-extensions imagick
 COPY numwal-www /usr/src/numwal-www
 
 # Runtime settings
-EXPOSE 9010/tcp
-CMD ["php", "-S", "0.0.0.0:9010", "-t", "/usr/src/numwal-www"]
+EXPOSE 9080/tcp
+CMD ["php", "-S", "0.0.0.0:9080", "-t", "/usr/src/numwal-www"]
 
 
 # TODO: Find a rootless means of running Composer and the 
