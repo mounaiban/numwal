@@ -3,10 +3,14 @@
 
 # Composer variable files
 composer.lock
-vendor # directory for Composer packages, change as needed 
+*/vendor/*
 
 # Vim
 .*.swp
 
 # TLS/SSL certificates and keys
 tls/*
+
+# PROTIP: If you change the Composer package directory, please
+# change the '*/vendor/*' entry above 
+
