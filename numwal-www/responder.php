@@ -30,10 +30,10 @@ abstract class Responder
 	* PROTIP: Responder classes must have a suffix 'Responder' to
 	* work correctly.
 	*
-	* PROTIP: Responders in NumJ are analogues to Controllers in the
+	* PROTIP: These Responders in are analogues to Controllers in the
 	* Model-View-Controller (MVC) style architecture, but are closer
 	* in implementation to Resources of the Resource-Method-Representation
-	* (RMR) model. NumJ is more RMR than MVC, but isn't strictly either.
+	* (RMR) model. 
 	*/
 	protected $f3;
 	protected const param_pattern = NULL; // parameter pattern, see below
