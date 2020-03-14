@@ -2,13 +2,14 @@
 FROM php:7-cli-alpine
 
 # Prepare Numwal directory
-RUN mkdir /usr/src/numwal-www
+RUN mkdir /usr/share/numwal && mkdir /usr/share/numwal/www
 
-# Install Composer, and install the Fat Free Framework
+# Install Numwal application files, Composer and the Fat Free Framework
 # NOTE: This will throw a security warning and an error regarding 
-# a lack of Git on the image. The app will work regardless.
-COPY numwal-www/composer.json /usr/src/numwal-www/
-WORKDIR /usr/src/numwal-www
+# a lack of Git. The app will work regardless.
+COPY www/ /usr/share/numwal/www/
+COPY composer.json /usr/share/numwal/
+WORKDIR /usr/share/numwal
 RUN apk add composer && composer upgrade
 
 # Install Imagick and dependencies using php-extension-installer
@@ -16,12 +17,9 @@ RUN apk add composer && composer upgrade
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin
 RUN install-php-extensions imagick
 
-# Install Numwal application files
-COPY numwal-www /usr/src/numwal-www
-
 # Runtime settings
 EXPOSE 9080/tcp
-CMD ["php", "-S", "0.0.0.0:9080", "-t", "/usr/src/numwal-www"]
+CMD ["php", "-S", "0.0.0.0:9080", "-t", "/usr/share/numwal/www/"]
 
 
 # TODO: Find a rootless means of running Composer and the 

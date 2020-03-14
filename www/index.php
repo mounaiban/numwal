@@ -20,7 +20,7 @@
  *
  */
 
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 require 'blankpic.php';
 require 'wallpaper.php';
 require 'responder.php';

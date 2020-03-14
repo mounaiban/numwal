@@ -4,6 +4,7 @@
 # Composer variable files
 composer.lock
 */vendor/*
+vendor/*
 
 # Vim
 .*.swp
