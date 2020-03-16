@@ -22,35 +22,41 @@ COPY composer.json /usr/share/numwal/
 WORKDIR /usr/share/numwal
 RUN composer install 
 
-# Stage 2B: Intranet Deployment - Nginx Installation
-# NOTE: php-fpm and php-session must be installed separately when using
-# php:cli-alpine Docker images.
-FROM base as intranet
-RUN apk add nginx && \
+# Stage 2B: Intranet Deployment - Nginx Installation without TLS
+FROM base as intranet-without-tls
+# Portion on linking logs to stdout/stderr pinched from the Nginx Plus Admin Guide 
+# https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-docker/
+# Create nginx.pid to work around a 'no such file or directory' error.
+# Copy fully-prepared Numwal directory from intranet-init stage.
+RUN apk add nginx && \ 
+	mkdir /run/nginx/ && \
+	touch /run/nginx/nginx.pid && \
+	ln -sf /dev/stdout /var/log/nginx/access.log && \
+ 	ln -sf /dev/stderr /var/log/nginx/error.log && \
 	mkdir /usr/share/numwal
 COPY --from=intranet-init /usr/share/numwal/ /usr/share/numwal/
-COPY conf/numwal-nginx.conf /etc/nginx/conf.d/
+COPY conf/numwal-nginx-without-tls.conf /etc/nginx/conf.d/numwal-nginx.conf
+# Stage 2B Container runtime settings
+STOPSIGNAL SIGTERM
+EXPOSE 9080/tcp
+CMD ["nginx", "-g", "daemon off;"]
+
+
+# Stage 3: Intranet Deployment - Nginx Installation with TLS
+FROM intranet-without-tls as intranet
 COPY tls/numwal-private.pem /etc/ssl/private
 COPY tls/numwal.pem /etc/ssl/certs
-
-# Nginx stuff (that I haven't fully figured out)
-# Create nginx.pid to work around a 'no such file or directory' error
-RUN mkdir /run/nginx/
-RUN touch /run/nginx/nginx.pid
-# Pinched from the Nginx Plus Admin Guide 
-# https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-docker/
-RUN ln -sf /dev/stdout /var/log/nginx/access.log \
- && ln -sf /dev/stderr /var/log/nginx/error.log
+COPY conf/numwal-nginx.conf /etc/nginx/conf.d/numwal-nginx.conf
+# Stage 3 Container runtime settings
 STOPSIGNAL SIGTERM
-
-# Container setup stuff
 EXPOSE 9443/tcp, 9080/tcp
 CMD ["nginx", "-g", "daemon off;"]
 
 
-
-# NOTE: Containers based on this image may fail on the very first run.
-# If this happens, try restarting the container.
+# NOTE: The intranet images built from this Dockerfile use Nginx and
+# php-fpm to host Numwal. Both are needed to be running to use Numwal,
+# but only Nginx manages to start. To use the application, please
+# start containers with the `php-fpm -D` command.
 
 # PROTIP: To maximise cache use, try to place steps that produce the
 # least frequent changes first. For example, an HTTP server that is 
