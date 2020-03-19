@@ -33,7 +33,7 @@ The installation procedure is basically:
 **NOTE:** Installation procedures vary between servers and operating systems; each software platform is different enough to need its own guide. Detailed and specific installation instructions will be posted on the wiki of this repository.
 
 #### Quick Start: Demonstration Intranet Deployment with Containers
-If you have container support enabled (e.g. Docker, Podman) on your system, you can get a self-contained evaluation container up and running pretty quickly. The container created in this demonstration will have all the necessary software dependencies required to host a Numwal server instance in an intranet.
+If you have container support enabled (e.g. Docker, Podman) on your system, you can get a self-contained evaluation container up and running pretty quickly using the Dockerfile included in this repo. The container created in this demonstration will have all the necessary software dependencies required to host a Numwal server instance in an intranet.
 
 1. `git clone https://mounaiban.github.com/numwal` OR extract the archive's contents into a directory named `numwal`, to download and/or install Numwal. This `numwal` directory may be substituted for another as needed, and will be called the _repo root_.
 
@@ -41,7 +41,7 @@ If you have container support enabled (e.g. Docker, Podman) on your system, you 
 
 3. If you are using the `intranet` container, place your TLS/SSL keys into the `tls/` directory. Skip this step if you are not using TLS. *Handle authoritative TLS keys with care; do not allow them to leak, and revoke leaked keys*.
 
-4. Build the container. While in the same directory as the Dockerfile, choose a command below to initiate the build process:
+4. Build the container. While in the same directory as the `Dockerfile`, pick the most appropriate command only from below to initiate the build process:
 
 	* **With TLS:** `docker build -t numwal .`
 
@@ -86,7 +86,8 @@ If you have container support enabled (e.g. Docker, Podman) on your system, you 
 Serving Numwal on the public internet is regarded as an advanced subject beyond the scope of this guide. Publicly-accessible servers might not be difficult to set up at all and the instructions herein might even suffice, but the security risks and availability challenges make deployment of public internet services worthy of a discussion of its own that is not possible reasonably summarise in this document.
 
 ### Requesting Wallpapers
-Use an HTTP client (such as a standard web browser or `curl`) to issue GET requests to the server to download wallpapers:
+Use an HTTP client (such as a standard web browser or `curl`) to issue GET requests to the server to download wallpapers.
+These examples assume that you have an instance of of Numwal running on your system (on the host or in a container), accessible from `localhost` on port `8080`.
 
 Try these in your web browser:
 
@@ -96,7 +97,7 @@ Try these in your web browser:
 
 * <http://[::1]:9080/blankpic/dci4k/indigo> (IPv6, preset size)
 
-If you need TLS protection beause there are meddlers on your network:
+If you have enabled TLS on the web server hosting Numwal, you can request the wallpapers over an encrypted HTTPS connection to avoid meddlers on your network tampering with your wallpapers:
 
 * <https://localhost:9443/wallpaper/default/9>
 
@@ -128,7 +129,7 @@ A list of preset sizes will be returned if no size or colour is specified <http:
 
 A link to a W3C document which contains a [list of X11 colours](https://www.w3.org/TR/css-color-3/#svg-color) is also shown for your convenience.
 
-### List of Available Features
+#### List of Available Features
 If you are lost, navigate to the default URL at <http://localhost:9080/>. A list of available features and relevant links will be returned. There aren't many features at the moment, and most of them have been covered by this document 😉.
 
 ## Copyright and Licensing 
