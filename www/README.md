@@ -83,7 +83,7 @@ If you have container support enabled (e.g. Docker, Podman) on your system, you 
 **NOTE:** The current Dockerfile produces images and containers that depend on both Nginx and `php-fpm`, but only Nginx automatically starts. Help with solving this issue would be much appreciated. If you followed the above instructions, you should be able to generate wallpapers from `localhost` right away!
 
 #### A Word on Running Numwal on the Internet
-Serving Numwal on the public internet is regarded as an advanced subject beyond the scope of this guide. Publicly-accessible servers might not be difficult to set up at all and the instructions herein might even suffice, but the security risks and availability challenges make deployment of public internet services worthy of a discussion of its own that is not possible reasonably summarise in this document.
+Serving Numwal on the public internet is regarded as an advanced subject beyond the scope of this guide. Publicly-accessible servers might not be difficult to set up at all and the instructions herein might even suffice, but the management challenges, especially with respect to security and availability, make public deployments worthy of a topic of their own.
 
 ### Requesting Wallpapers
 Use an HTTP client (such as a standard web browser or `curl`) to issue GET requests to the server to download wallpapers.
