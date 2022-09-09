@@ -1,80 +1,40 @@
-# Numwal Evaluation Dockerfile (on PHP Development Server, without TLS)
+# Numwal Evaluation Dockerfile (on PHP Built-in Web Server, no TLS)
 
-# Stage 1: Base (Install Imagick on Docker's PHP official image)
-# This stage is sufficient for development. Bind mount the Numwal
-# repository root and you're good to go!
+# Stage 1: PHP+Imagick Base Image
+#
+# The Base Image is sufficient for development. Bind mount the Numwal
+# repository root (the same directory as this Dockerfile), and use
+# "docker exec" or "podman exec" commands to start PHP.
+#
+# This Dockerfile uses php-extension-installer. Please run the correct
+# command below for your system *before* building the image, to update
+# the script to the latest version:
+# docker pull mlocati/php-extension-installer
+# podman pull docker.io/mlocati/php-extension-installer
+#
+# See: https://github.com/mlocati/docker-php-extension-installer#copying-the-script-from-a-docker-image
+FROM php:7-alpine as base
+COPY --from=docker.io/mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin
+RUN /usr/bin/install-php-extensions imagick && \
+    /usr/bin/install-php-extensions @composer
 
-# Install Imagick and dependencies using php-extension-installer
-# as advised by the PHP docker image maintainers*
-FROM php:7-fpm-alpine as base
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin
-RUN install-php-extensions imagick && \
-	apk add composer 
-
-# Stage 2A: Intranet Deployment - Numwal and Composer Dependency Installation
-# NOTE: This will throw a security warning, and an error regarding 
-# a lack of Git. The app will work regardless.
-FROM base as intranet-init
+# Stage 2: Simple Intranet Demo Deployment
+#
+# This image deploys instances of Numwal using the PHP built-in web
+# server without TLS. It is by no means production-grade, but it's
+# good enough for a concept demonstration.
+#
+# NOTE: A security alert will appear warning against running Composer
+# as root. The app will still work.
+# TODO: Find a rootless means of running Composer
+FROM base as intranet-demo
 RUN mkdir /usr/share/numwal && \
 	mkdir /usr/share/numwal/www
 COPY www/ /usr/share/numwal/www/
 COPY composer.json /usr/share/numwal/
 WORKDIR /usr/share/numwal
-RUN composer install 
-
-# Stage 2B: Intranet Deployment - Nginx Installation without TLS
-FROM base as intranet-without-tls
-# Portion on linking logs to stdout/stderr pinched from the Nginx Plus Admin Guide 
-# https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-docker/
-# Create nginx.pid to work around a 'no such file or directory' error.
-# Copy fully-prepared Numwal directory from intranet-init stage.
-RUN apk add nginx && \ 
-	mkdir /run/nginx/ && \
-	touch /run/nginx/nginx.pid && \
-	ln -sf /dev/stdout /var/log/nginx/access.log && \
- 	ln -sf /dev/stderr /var/log/nginx/error.log && \
-	mkdir /usr/share/numwal
-COPY --from=intranet-init /usr/share/numwal/ /usr/share/numwal/
-COPY conf/numwal-nginx-without-tls.conf /etc/nginx/conf.d/numwal-nginx.conf
-# Stage 2B Container runtime settings
+RUN composer install
 STOPSIGNAL SIGTERM
 EXPOSE 9080/tcp
-CMD ["nginx", "-g", "daemon off;"]
-
-
-# Stage 3: Intranet Deployment - Nginx Installation with TLS
-FROM intranet-without-tls as intranet
-COPY tls/numwal-private.pem /etc/ssl/private
-COPY tls/numwal.pem /etc/ssl/certs
-COPY conf/numwal-nginx.conf /etc/nginx/conf.d/numwal-nginx.conf
-# Stage 3 Container runtime settings
-STOPSIGNAL SIGTERM
-EXPOSE 9443/tcp, 9080/tcp
-CMD ["nginx", "-g", "daemon off;"]
-
-
-# NOTE: The intranet images built from this Dockerfile use Nginx and
-# php-fpm to host Numwal. Both are needed to be running to use Numwal,
-# but only Nginx manages to start. To use the application, please
-# start containers with the `php-fpm -D` command.
-
-# PROTIP: To maximise cache use, try to place steps that produce the
-# least frequent changes first. For example, an HTTP server that is 
-# normally updated quarterly should be installed before an application
-# which changes daily.
-
-# PROTIP: The php-extension-installer script by Michele Locati is
-# the surest way of creating Imagick-enabled PHP images known yet.
-# See the GitHub repository for more info:
-# https://github.com/mlocati/docker-php-extension-installer
-
-# TODO: Find a rootless means of running Composer and the 
-# development server
-
-# TODO: Use environment variables to make it easier to switch between
-# alternate Nginx configuration files and TLS keys from different files
-# in different directories
-
-# * PHP Docker Official Images. How to Install More PHP extensions.
-#   2020-03-10. https://hub.docker.com/_/php
-
+WORKDIR /usr/share/numwal/www
+CMD ["php", "-S", "0.0.0.0:80", "index.php"]
