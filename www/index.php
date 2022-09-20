@@ -1,6 +1,6 @@
 <?php
 
-/** 
+/**
  * Numwal--HTTP-Operated Numbered Wallpaper Generator
  * Main Module
  *
@@ -28,8 +28,8 @@ require 'responder.php';
 /**
  * Fat Free Framework and App Setup
  */
-$f3 = \Base::instance();  
-$f3->set('app_version', '0.5-WIP');
+$f3 = \Base::instance();
+$f3->set('app_version', '0.6-WIP');
 
 const DEV_LINKS = [
 	'_github_repo' => 'https://github.com/mounaiban/numwal',
@@ -38,8 +38,8 @@ const DEV_LINKS = [
 
 class AboutResponder extends Numwal\Responder
 {
-	/** 
-	 * NOTE: Responder Summaries will be used in lieu of 
+	/**
+	 * NOTE: Responder Summaries will be used in lieu of
 	 * class-scope code comments in the main module for now...
 	 */
 	public const summary = [
@@ -132,7 +132,7 @@ class WallpaperResponder extends Numwal\Responder
 
 	public function respond($f3, $params)
 	{
-		$this->wallpaper->setStyleByName($params['style']); 
+		$this->wallpaper->setStyleByName($params['style']);
 		header($this->wallpaper->getHeader());
 		echo $this->wallpaper->getWallpaperBlob($params['number']);
 	}
@@ -213,7 +213,7 @@ class HelpResponder extends Numwal\Responder
 class JSONResponse
 {
 	/**
-	 * JSON-formatted response with one or more messages and 
+	 * JSON-formatted response with one or more messages and
 	 * zero or more links.
 	 *
 	 * NOTE: This response format is an attempt at providing
@@ -234,7 +234,7 @@ class JSONResponse
 	function respond()
 	{
 		/**
-		 * Response format: 
+		 * Response format:
 		 *
 		 * Messages have a one-word subject which also acts as a JSON key.
 		 * Messages are delivered as top-level attributes.
@@ -257,9 +257,9 @@ function getResponderInfo()
 	/**
 	 * Return an array containing information on the Responders in
 	 * this main module.
-	 * 
+	 *
 	 * Format:
-	 * The array contains top-level sub-arrays, each containing 
+	 * The array contains top-level sub-arrays, each containing
 	 * information about one responder, with the *name of the class* as
 	 * the key.
 	 *
@@ -274,7 +274,7 @@ function getResponderInfo()
 	$cls_names = get_declared_classes();
 	foreach($cls_names as $cls){
 		if(get_parent_class($cls) == "Numwal\Responder"){
-			// PROTIP: Here's the format of the Responder information 
+			// PROTIP: Here's the format of the Responder information
 			// in greater detail.
 			$info = [
 				'base' => $cls::getPathBase(),

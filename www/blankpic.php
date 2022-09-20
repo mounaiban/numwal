@@ -1,7 +1,7 @@
 <?php
-/** 
+/**
  * Numwal--HTTP-Operated Numbered Wallpaper Generator
- * Blank Picture Class 
+ * Blank Picture Class
  *
  * Copyright 2020-2022 Mounaiban
  *
@@ -58,7 +58,7 @@ class BlankPic
 		 * initialised during object construction.
 		 * See StackOverflow Question #40171546
 		 */
-		$this->canvas = new Imagick(); 
+		$this->canvas = new Imagick();
 	}
 
 	public function getBlankPicBlob()
@@ -77,7 +77,7 @@ class BlankPic
 		 * Get strings needed to set the content type HTTP
 		 * header attribute, to prepare receiving applicaions
 		 * for receiving images of the appropriate format.
-		 * 
+		 *
 		 * PROTIP: This method is meant to be run only after
 		 * setSpecs() has been run at least once.
 		 */
