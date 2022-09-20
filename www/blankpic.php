@@ -90,15 +90,22 @@ class BlankPic
 		$sizes = $this->getSizeNames();
 		$preset = $sizes[$size];
 		/**
-		 * Interpret size param as a HxW specification 
-		 * if size spec not found. For example, 999x666
-		 * will be interpreted as $width=999; $height=666
+		 * Interpret size param as a WxH specification
+		 * if size name isn't found; e.g. "999x666"
+		 * will be read as: $width=999; $height=666;
+         * Both upper and lowercase 'x' are supported.
 		 */
 		if($preset == NULL){
 			$s = explode('x',$size);
+            if(count($s) <= 1){
+                $s = explode('X',$size);
+                if(count($s) <= 1){
+                    throw new Exception('Unrecognised custom size');
+                }
+            }
 			$width = $s[0];
 			$height = $s[1];
-			// PROTIP: anything after a second lowercase x will be ignored
+			// PROTIP: anything after a second x will be ignored
 		}
 		else{
 			$width = $preset[0];
