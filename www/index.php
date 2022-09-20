@@ -325,7 +325,7 @@ function appSetup($f3)
 			$pattern = $resps[$cls]['route-pattern'];
 			$f3->route($pattern, $fn_name);
 		}
-	$f3->route("GET @default: /@base","HelpResponder->respond");
+	$f3->route("GET @default: /@base*","HelpResponder->respond");
 	$f3->route("GET @index: /","HelpResponder->respond");
 }
 
