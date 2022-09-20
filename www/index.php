@@ -4,7 +4,7 @@
  * Numwal--HTTP-Operated Numbered Wallpaper Generator
  * Main Module
  *
- * Copyright 2020 Mounaiban
+ * Copyright 2020-2022 Mounaiban
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,8 +78,9 @@ class BlankPicResponder extends Numwal\Responder
 	public const summary = [
 		"description" => "Return a blank picture of a selected colour.",
 		"feature-1" => "Choose from a list of preset sizes.",
-		"feature-2" => "Most X11 colour keywords are supported.",
-		"feature-3" => "Arbitrary HxW sizes are supported (with lowercase x)."
+		"feature-2" => "Use WxH notation for custom sizes.",
+		"feature-3" => "Most X11 colour keywords are supported.",
+		"feature-4" => "Use three- or six-digit Hex codes for custom colours.",
 	];
 
 	function respond($f3, $params)

@@ -3,7 +3,7 @@
  * Numwal--HTTP-Operated Numbered Wallpaper Generator
  * Blank Picture Class 
  *
- * Copyright 2020 Mounaiban
+ * Copyright 2020-2022 Mounaiban
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,11 @@
  */
 namespace Numwal;
 
+use Exception;
 use Imagick;
 use ImagickDraw;
 use ImagickPixel;
+use ImagickPixelException;
 
 class BlankPic
 {
@@ -42,6 +44,7 @@ class BlankPic
 	protected $canvas;
 	protected $draw;
 	protected $px_fill;
+	protected $px;
 	protected $size_list_file = 'sizes.json';
 	public $format = 'png';
 	
@@ -56,7 +59,6 @@ class BlankPic
 		 * See StackOverflow Question #40171546
 		 */
 		$this->canvas = new Imagick(); 
-		$this->px = new ImagickPixel(); 
 	}
 
 	public function getBlankPicBlob()
@@ -102,24 +104,23 @@ class BlankPic
 			$width = $preset[0];
 			$height = $preset[1];
 		}
-		/** 
-		 *  TODO: Implement support for colour hex codes for
-		 *  more choice in specifying colours.
-		 * 
-		 *  PROTIP: F3 does not allow catching Imagick errors
-		 *  the usual way (i.e. with exceptions and/or reading 
-		 *  the return value of the method). The application
-		 *  will simply halt on the offending call.
-		 *  Instead, an error handler must me set using the
-		 *  ONERROR hive attribute.
-		 */
-		$color_set = $this->px->setColor($color);
-		if($color_set === FALSE){
-			$hxcolor = "#{$color}"; // attempt to interpret as hex code
-			$this->px->setColor($hxcolor);
-		}
-		$this->canvas->newImage($width, $height, $this->px);
-
+        try
+        {
+            $this->px = new ImagickPixel($color);
+        }
+        catch (ImagickPixelException $e)
+        {
+            // attempt to interpret colour as hex code
+            $slen = strlen($color);
+            if($slen != 3 and $slen != 6) {
+                throw new Exception('Invalid colour or RGB code');
+            }
+            elseif(strspn($color, 'abcdef0123456789') != $slen) {
+                throw new Exception('Invalid or unsupported RGB hex code');
+            }
+			$hxcolor = "#{$color}";
+			$this->px = new ImagickPixel($hxcolor);
+        }
 		$this->canvas->newImage($width, $height, $this->px);
 		$this->canvas->setImageFormat($this->format);
 	}
