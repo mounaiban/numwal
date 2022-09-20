@@ -186,6 +186,10 @@ class HelpResponder extends Numwal\Responder
 			$msgs = $cls::summary;
 			$paths = $cls::getLinks([]);
 		}
+        $debug_lvl = $f3->get('DEBUG');
+        if($debug_lvl){
+            $msgs['_debug_level'] = $debug_lvl;
+        }
 		$resp = new JSONResponse($msgs, $paths);
 		$resp->respond();
 	}
@@ -314,10 +318,6 @@ function getResponderInfoByBase()
 
 function appSetup($f3)
 {
-	/**
-	 * Setup F3 routes and set/unset debugging mode
-	 */
-	$f3->set('DEBUG',0); // TODO: Remove or set DEBUG to 0 when not hacking!
 	$resps = getResponderInfo();
 	$cls_names = array_keys($resps);
 	foreach($cls_names as $cls){
@@ -333,6 +333,7 @@ function appSetup($f3)
  *  Start the app.
  */
 appSetup($f3);
+$f3->set('DEBUG', intval(getenv('NUMWAL_DEBUG')));
 $f3->run();
 
 ?>
