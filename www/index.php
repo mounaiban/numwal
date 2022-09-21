@@ -56,15 +56,11 @@ class AboutResponder extends Numwal\Responder
 		echo $md->convert($text);
 	}
 
-	static function getLinks($options)
+	static function getLinks($f3, $options)
 	{
-		/**
-		* TODO: Find out how to generate URIs with the host
-		* and protocol intact
-		**/
 		$path = static::getPathBase();
 		$links = [
-			'about' => "/{$path}",
+			'about' => static::getFullURI($f3, $path),
 			'_github_repo' => DEV_LINKS['_github_repo'],
 			'_x11_colors' => DEV_LINKS['_x11_colors']
 		];
@@ -91,27 +87,26 @@ class BlankPicResponder extends Numwal\Responder
 		echo $bp->getBlankPicBlob();
 	}
 
-	static function getLinks($options)
+	static function getLinks($f3, $options)
 	{
 		$base = static::getPathBase();
-		$paths = [];
+		$uris = [];
 		// Get preset size examples
 		// (only available if a valid sizes.json is present in app root)
 		$bp = new Numwal\BlankPic();
-		$color_example = 'gold';
 		$sizes = array_keys($bp->getSizeNames());
-		foreach($sizes as $s){
-			$key = "{$base}_{$s}_{$color_example}";
-			$paths[$key] = "/{$base}/{$s}/{$color_example}";
-		}
 		// Insert HxW free size example
 		$base = static::getPathBase();
-		$color_example = 'limegreen';
-		$freesize_example = '666x999';
-		$key = "{$base}_freesize_{$color_example}";
-		$paths[$key] = "/{$base}/{$freesize_example}/{$color_example}"; 
-		$paths['_x11_colors'] = DEV_LINKS['_x11_colors'];
-		return $paths;
+		$uris['_custom_size_color_3_digit'] = static::getFullURI($f3, "{$base}/666x999/abc");
+		$uris['_custom_size_color_6_digit'] = static::getFullURI($f3, "{$base}/666x999/ddeeff");
+		$color_example = 'gold';
+		foreach($sizes as $s){
+			$key = "{$base}_{$s}_{$color_example}";
+            $path = "{$base}/{$s}/{$color_example}";
+			$uris[$key] = static::getFullURI($f3, $path);
+		}
+		$uris['_x11_colors'] = DEV_LINKS['_x11_colors'];
+		return $uris;
 	}
 
 }
@@ -137,27 +132,27 @@ class WallpaperResponder extends Numwal\Responder
 		echo $this->wallpaper->getWallpaperBlob($params['number']);
 	}
 
-	public static function getLinks($options)
+	public static function getLinks($f3, $options)
 	{
 		$base = static::getPathBase();
 		$wp = new Numwal\Wallpaper();
-		$paths = [];
+		$uris = [];
 		$style_names = $wp->getStyleNames();
 		foreach($style_names as $n){
 			$wp->setStyleByName($n);
 			$n_last = $wp->max_number;
 			// Add link to first wallpaper per style
-			$path_first = str_replace('@number', '0', static::param_pattern);
-			$path_first = str_replace('@style', $n, $path_first);
+			$path_1 = str_replace('@number', '0', static::param_pattern);
+			$path_1= str_replace('@style', $n, $path_1);
 			$key_first = "{$base}_{$n}_first";
-			$paths[$key_first] = "/{$base}/{$path_first}";
+			$uris[$key_first] = static::getFullURI($f3, "{$base}/{$path_1}");
 			// Add link to last wallpaper per style
-			$path_last = str_replace('@number', $n_last, static::param_pattern);
-			$path_last = str_replace('@style', $n, $path_last);
+			$path_n= str_replace('@number', $n_last, static::param_pattern);
+			$path_n= str_replace('@style', $n, $path_n);
 			$key_last = "{$base}_{$n}_last";
-			$paths[$key_last] = "/{$base}/{$path_last}";
+			$uris[$key_last] = static::getFullURI($f3, "{$base}/{$path_n}");
 		}
-		return $paths;
+		return $uris;
 	}
 }
 
@@ -176,36 +171,36 @@ class HelpResponder extends Numwal\Responder
 		$names = array_keys($resps);
 		$b = $params['base'];
 		if($b==NULL| in_array($b, $names)===FALSE| $b==static::getPathBase()){
-			// TODO: Special response for /help/help
+			// Special response for /help/help
 			// PROTIP: Base is NULL when /help route is taken
 			$msgs = static::summary;
-			$paths = static::getLinks([]);
+			$uris = static::getLinks($f3, []);
 		}
 		else{
 			$cls = $resps[$b]['class-name'];
 			$msgs = $cls::summary;
-			$paths = $cls::getLinks([]);
+			$uris = $cls::getLinks($f3, []);
 		}
         $debug_lvl = $f3->get('DEBUG');
         if($debug_lvl){
             $msgs['_debug_level'] = $debug_lvl;
         }
-		$resp = new JSONResponse($msgs, $paths);
+		$resp = new JSONResponse($msgs, $uris);
 		$resp->respond();
 	}
 
-	public static function getLinks($options)
+	public static function getLinks($f3, $options)
 	{
-		$paths = [];
+		$uris = [];
 		$base = static::getPathBase();
 		$pp = static::param_pattern;
 		$resps = getResponderInfoByBase();
 		$names = array_keys($resps);
 		foreach($names as $n){
 			$path = str_replace('@base', $n, $pp);
-			$paths["help-{$n}"] = "/{$base}/{$path}";
+			$uris["help-{$n}"] = static::getFullURI($f3, "{$base}/{$path}");
 		}
-		return $paths;
+		return $uris;
 	}
 
 }

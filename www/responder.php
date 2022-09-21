@@ -39,7 +39,7 @@ abstract class Responder
 	protected const param_pattern = NULL; // parameter pattern, see below
 	public const summary = 'No summary';
 
-	abstract public static function getLinks($options);
+	abstract public static function getLinks($f3, $options);
 	/* Get a list of suggested links in response to an invalid request or
 	 * an explicit request for usage hints.
 	 */
@@ -90,6 +90,11 @@ abstract class Responder
 			return "GET @{$path_base}: /{$path_base}";
 		}
 	}
+
+    public static function getFullURI($f3, $path)
+    {
+        return "{$f3->get('SCHEME')}://{$f3->get('HEADERS')['Host']}/{$path}";
+    }
 }
 
 ?>
