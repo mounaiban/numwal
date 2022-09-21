@@ -3,7 +3,7 @@
  * Numwal--HTTP-Operated Numbered Wallpaper Generator
  * Wallpaper Class 
  *
- * Copyright 2020 Mounaiban
+ * Copyright 2020-2022 Mounaiban
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ namespace Numwal;
 use Imagick;
 use ImagickDraw;
 use ImagickPixel;
+use Exception;
 
 class Wallpaper
 {
@@ -121,6 +122,15 @@ class Wallpaper
 		return $paths;
 	}
 
+    protected static function handleError($n, $s, $file, $line, $context)
+    {
+        restore_error_handler();
+        if(strpos($s, 'No such file')){
+            $path = explode(DIRECTORY_SEPARATOR, $s);
+            throw new Exception("Wallpaper style not found: {$path[1]}");
+        }
+    }
+
 	public function loadStyle($style_fqname)
 	{
 		/**
@@ -132,6 +142,7 @@ class Wallpaper
 		 */
 		$style_data = [];
 		$paths = $this->buildPathList($style_fqname);
+        set_error_handler('static::handleError');
 		foreach($paths as $path){
 			$str_data = file_get_contents($path);
 			$temp = json_decode($str_data, TRUE, 3);
@@ -165,6 +176,7 @@ class Wallpaper
 				}
 			}
 		}
+        restore_error_handler();
 		return $style_data;
 	}
 

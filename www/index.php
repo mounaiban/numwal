@@ -81,10 +81,20 @@ class BlankPicResponder extends Numwal\Responder
 
 	function respond($f3, $params)
 	{
-		$bp = new Numwal\BlankPic();
-		$bp->setSpecs($params['size'], $params['color']);
-		header($bp->getHeader());
-		echo $bp->getBlankPicBlob();
+        try
+        {
+            $bp = new Numwal\BlankPic();
+            $bp->setSpecs($params['size'], $params['color']);
+            header($bp->getHeader());
+            echo $bp->getBlankPicBlob();
+        }
+        catch (Exception $e)
+        {
+            $params['error-message'] = $e->getMessage();
+            $params['base'] = static::getPathBase();
+            $resp_err = new HelpResponder();
+            $resp_err->respond($f3, $params);
+        }
 	}
 
 	static function getLinks($f3, $options)
@@ -127,9 +137,19 @@ class WallpaperResponder extends Numwal\Responder
 
 	public function respond($f3, $params)
 	{
-		$this->wallpaper->setStyleByName($params['style']);
-		header($this->wallpaper->getHeader());
-		echo $this->wallpaper->getWallpaperBlob($params['number']);
+        try
+        {
+            $this->wallpaper->setStyleByName($params['style']);
+            header($this->wallpaper->getHeader());
+            echo $this->wallpaper->getWallpaperBlob($params['number']);
+        }
+        catch (Exception $e)
+        {
+            $params['error-message'] = $e->getMessage();
+            $params['base'] = static::getPathBase();
+            $resp_err = new HelpResponder();
+            $resp_err->respond($f3, $params);
+        }
 	}
 
 	public static function getLinks($f3, $options)
@@ -181,6 +201,10 @@ class HelpResponder extends Numwal\Responder
 			$msgs = $cls::summary;
 			$uris = $cls::getLinks($f3, []);
 		}
+        $err = $params['error-message'];
+        if($err){
+            $msgs['error-message'] = $err;
+        }
         $debug_lvl = $f3->get('DEBUG');
         if($debug_lvl){
             $msgs['_debug_level'] = $debug_lvl;
