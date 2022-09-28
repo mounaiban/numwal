@@ -190,7 +190,9 @@ class HelpResponder extends Numwal\Responder
 	 	$resps = getResponderInfoByBase();
 		$names = array_keys($resps);
 		$b = $params['base'];
+        $cls;
 		if($b==NULL| in_array($b, $names)===FALSE| $b==static::getPathBase()){
+            $cls = get_called_class();
 			// Special response for /help/help
 			// PROTIP: Base is NULL when /help route is taken
 			$msgs = static::summary;
@@ -209,6 +211,7 @@ class HelpResponder extends Numwal\Responder
         if($debug_lvl){
             $msgs['_debug_level'] = $debug_lvl;
         }
+        $msgs['uri-format'] = $cls::getFullURIPattern($f3);
 		$resp = new JSONResponse($msgs, $uris);
 		$resp->respond();
 	}

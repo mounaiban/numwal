@@ -95,6 +95,14 @@ abstract class Responder
     {
         return "{$f3->get('SCHEME')}://{$f3->get('HEADERS')['Host']}/{$path}";
     }
+
+    public static function getFullURIPattern($f3)
+    {
+        $pattern = static::param_pattern;
+        $base = static::getPathBase();
+        $host = $f3->get('HEADERS')['Host'];
+        return "{$f3->get('SCHEME')}://{$host}/{$base}/{$pattern}";
+    }
 }
 
 ?>
