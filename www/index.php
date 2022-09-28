@@ -178,18 +178,18 @@ class WallpaperResponder extends Numwal\Responder
 
 class HelpResponder extends Numwal\Responder
 {
-	protected const param_pattern = '@base';	
+	protected const param_pattern = '@feature';
 	public const summary = [
-		'description' => 'Review usage information for available features',
-		'welcome' => 'Welcome to the wallpaper generator.',
-		'features' => 'Navigate to a help resource in links for info.'
+		'description' => 'Review of app features and usage information.',
+		'feature-1' => 'Welcome to the wallpaper generator.',
+		'feature-2' => 'Follow links for usage info.'
 	];
 
 	public function respond($f3, $params)
 	{
 	 	$resps = getResponderInfoByBase();
 		$names = array_keys($resps);
-		$b = $params['base'];
+		$b = $params['feature'];
         $cls;
 		if($b==NULL| in_array($b, $names)===FALSE| $b==static::getPathBase()){
             $cls = get_called_class();
@@ -224,7 +224,7 @@ class HelpResponder extends Numwal\Responder
 		$resps = getResponderInfoByBase();
 		$names = array_keys($resps);
 		foreach($names as $n){
-			$path = str_replace('@base', $n, $pp);
+			$path = str_replace('@feature', $n, $pp);
 			$uris["help-{$n}"] = static::getFullURI($f3, "{$base}/{$path}");
 		}
 		return $uris;
@@ -347,7 +347,7 @@ function appSetup($f3)
 			$pattern = $resps[$cls]['route-pattern'];
 			$f3->route($pattern, $fn_name);
 		}
-	$f3->route("GET @default: /@base*","HelpResponder->respond");
+	$f3->route("GET @default: /@feature*","HelpResponder->respond");
 	$f3->route("GET @index: /","HelpResponder->respond");
 }
 
