@@ -9,6 +9,6 @@
 	"huawei-p30" : [1080, 2340, "Huawei P30"],
 	"qvga" : [320, 240, "VGA 240 lines"],
 	"samsung-gs20" : [1440, 3200, "Samsung Galaxy S20 main screen"],
-	"vga" : [640, 480, "VGA 480 lines"],
-	"uhd4k" : [3840, 2160, "ITU-R BT.2020 4K"]
+	"uhd4k" : [3840, 2160, "ITU-R BT.2020 4K"],
+	"vga" : [640, 480, "VGA 480 lines"]
 }
