@@ -160,16 +160,16 @@ class WallpaperResponder extends Numwal\Responder
 		$style_names = $wp->getStyleNames();
 		foreach($style_names as $n){
 			$wp->setStyleByName($n);
-			$n_last = $wp->max_number;
+			$n_last = str_repeat("X", $wp->max_digits);
 			// Add link to first wallpaper per style
 			$path_1 = str_replace('@number', '0', static::param_pattern);
 			$path_1= str_replace('@style', $n, $path_1);
 			$key_first = "{$base}_{$n}_first";
 			$uris[$key_first] = static::getFullURI($f3, "{$base}/{$path_1}");
-			// Add link to last wallpaper per style
+			// Add link to example wallpapers with maximum digits
 			$path_n= str_replace('@number', $n_last, static::param_pattern);
 			$path_n= str_replace('@style', $n, $path_n);
-			$key_last = "{$base}_{$n}_last";
+			$key_last = "{$base}_{$n}_max_digits";
 			$uris[$key_last] = static::getFullURI($f3, "{$base}/{$path_n}");
 		}
 		return $uris;

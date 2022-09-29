@@ -47,13 +47,13 @@ class Wallpaper
 	protected $px_fill; 
 	protected $styles_dir = 'styles';
 	protected $style_filename = 'style.json';
-	protected $max_number_default = 99;
+	protected $max_digits_default = 2;
 	public $format = 'png';
-	public $max_number = 99;
+	public $max_digits = 2;
 
 	public $messages = [
 		"number-too-large" => "Number requested has too many digits",
-		"number-negative" => "Negative number requested",
+        "unsupported-digits" => "Only ASCII printable charaters are supported",
 	];
 	
 	public function __construct()
@@ -243,13 +243,12 @@ class Wallpaper
 
 	protected function setNumberStyle($style_props)
 	{
-		// Set maximum number
 		$maxd = $style_props['max-digits'];
 		if($maxd !== NULL){
-			$this->max_number = (10**$maxd)-1;
+			$this->max_digits = $maxd;
 		}
 		else{
-			$this->max_number = $this->max_number_default;
+			$this->max_digits = $this->max_digits_default;
 		}
 
 		// Set font colour
@@ -324,18 +323,16 @@ class Wallpaper
 		 * Initiates image composition and returns the composed
 		 * image in a PHP binary string
 		 */
-
-		$n = (int) $number;
-		if($n > $this->max_number){
-			$message = $this->messages['number-too-large'];
-			$this->composeWithWarning($n, $message);
-		}
-		elseif($n < 0){
-			$message = $this->messages['number-negative'];
-			$this->composeWithWarning($n, $message);
+        for($i=0; $i<strlen($number); $i++){
+            if(ord($number[$i]) < 32 or ord($number[$i]) > 126){
+                throw new Exception($this->messages['unsupported-digits']);
+            }
+        }
+		if(strlen($number) > $this->max_digits){
+            throw new Exception($this->messages['number-too-large']);
 		}
 		else{
-			$this->compose($n);
+			$this->compose($number);
 		}
 		$this->canvas->setImageFormat($this->format);
 		return $this->canvas->getImageBlob();
