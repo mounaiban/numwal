@@ -187,8 +187,8 @@ class HelpResponder extends Numwal\Responder
 
 	public function respond($f3, $params)
 	{
-	 	$resps = getResponderInfoByBase();
-		$names = array_keys($resps);
+        $resps = getResponderInfo($by_base=true);
+        $names = array_keys($resps);
 		$b = $params['feature'];
         $cls;
 		if($b==NULL| in_array($b, $names)===FALSE| $b==static::getPathBase()){
@@ -221,7 +221,7 @@ class HelpResponder extends Numwal\Responder
 		$uris = [];
 		$base = static::getPathBase();
 		$pp = static::param_pattern;
-		$resps = getResponderInfoByBase();
+		$resps = getResponderInfo($by_base=true);
 		$names = array_keys($resps);
 		foreach($names as $n){
 			$path = str_replace('@feature', $n, $pp);
@@ -274,20 +274,27 @@ class JSONResponse
 	}
 }
 
-function getResponderInfo()
+function getResponderInfo($by_base=false)
 {
 	/**
 	 * Return an array containing information on the Responders in
 	 * this main module.
 	 *
-	 * Format:
-	 * The array contains top-level sub-arrays, each containing
-	 * information about one responder, with the *name of the class* as
-	 * the key.
-	 *
-	 * Each sub-array in turn contains elements that represent various
-	 * properties of the Responder, such as path bases and routing
-	 * patterns.
+	 * Format (default):
+     * [
+     *    ResponderClassName => ['class-name' => 'name', ... ],
+     *    ...
+     * ]
+     *
+	 * Format (By Base):
+     * [
+     *    responderBaseName => ['class-name' => 'name', ... ],
+     *    ...
+     * ]
+     *
+	 * The array contains sub-arrays containing information about one
+     * responde each. Each sub-array's key is either the class name,
+     * or the path base name if by_base is true.
 	 *
 	 * This method uses introspection/reflection to search for
 	 * subclasses of the Responder class in this module.
@@ -299,10 +306,12 @@ function getResponderInfo()
 			// PROTIP: Here's the format of the Responder information
 			// in greater detail.
 			$info = [
+				'class-name' => $cls,
 				'base' => $cls::getPathBase(),
 				'route-pattern' => $cls::getF3RoutePattern()
 			];
-			$resps[$cls] = $info;
+            if($by_base) $resps[$cls::getPathBase()] = $info;
+            else $resps[$cls] = $info;
 		}
 	}
 	return $resps;
