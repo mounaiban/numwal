@@ -34,11 +34,11 @@ at `localhost` on port `9080`:
 
 Try these in your web browser:
 
-* <http://localhost:9080/wallpaper/default/9>
+* <http://localhost:9080/wallpaper/default/9> 🔹
 
-* <http://127.0.0.1:9080/blankpic/1440x3200/orange> (IPv4, HxW)
+* <http://127.0.0.1:9080/blankpic/1440x3200/orange> (IPv4, HxW)🔹
 
-* <http://[::1]:9080/blankpic/dci4k/indigo> (IPv6, preset size)
+* <http://[::1]:9080/blankpic/dci4k/ab06d9> (IPv6, preset size)🔹
 
 Wallpapers may also be downloaded with the `curl` command, useful when
 wallpapers have to be requested from a script:
@@ -47,7 +47,7 @@ wallpapers have to be requested from a script:
 
 * `curl -o numwal-blank-demo.png http://127.0.0.1:9080/blankpic/1440x3200/orange`
 
-* `curl -o numwal-blank-demo.png http://[::1]:9080/blankpic/dci4k/indigo`
+* `curl -o numwal-blank-demo.png http://[::1]:9080/blankpic/dci4k/ab06d9`
 
 #### Numbered Wallpapers
 
