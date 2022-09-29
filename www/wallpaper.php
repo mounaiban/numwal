@@ -76,26 +76,6 @@ class Wallpaper
 		$this->canvas->drawImage($this->draw);
 	}
 
-	protected function composeWithWarning($number, $message)
-	{
-		/**
-		 * Set up the canvas for drawing a contingency wallpaper
-		 * when a wallpaper of a number considered to be invalid by its 
-		 * style specification (e.g. number has too many digits).
-		 */
-		 // TODO: Re-implement this as a style sheet?
-		$this->draw->setFontSize(14);
-		$this->draw->setFontWeight(900);
-		$this->px_fill->setColor('black');
-		$this->draw->setFillColor($this->px_fill);
-		$this->draw->setTextUnderColor('red');
-		$this->draw->setGravity(Imagick::GRAVITY_NORTHWEST);
-		$this->draw->setTextAlignment(Imagick::ALIGN_LEFT);
-		$this->draw->annotation(0, 16, $message);
-		$this->draw->annotation(1, 48, $number);
-		$this->canvas->drawImage($this->draw);
-	}
-
 	protected function buildPathList($style_fqname)
 	{
 		/**
