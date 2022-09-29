@@ -212,8 +212,8 @@ class HelpResponder extends Numwal\Responder
             $msgs['_debug_level'] = $debug_lvl;
         }
         $msgs['uri-format'] = $cls::getFullURIPattern($f3);
-		$resp = new JSONResponse($msgs, $uris);
-		$resp->respond();
+		$jr = new JSONResponse($msgs, $uris);
+		$jr->respond();
 	}
 
 	public static function getLinks($f3, $options)
