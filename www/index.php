@@ -73,7 +73,7 @@ class BlankPicResponder extends Numwal\Responder
 	protected const param_pattern = "@size/@color";
 	public const summary = [
 		"description" => "Return a blank picture of a selected colour.",
-		"feature-1" => "Choose from a list of preset sizes.",
+		"feature-1" => "Check links for preset sizes.",
 		"feature-2" => "Use WxH notation for custom sizes.",
 		"feature-3" => "Most X11 colour keywords are supported.",
 		"feature-4" => "Use three- or six-digit Hex codes for custom colours.",
@@ -107,8 +107,8 @@ class BlankPicResponder extends Numwal\Responder
 		$sizes = array_keys($bp->getSizeNames());
 		// Insert HxW free size example
 		$base = static::getPathBase();
-		$uris['_custom_size_color_3_digit'] = static::getFullURI($f3, "{$base}/666x999/abc");
-		$uris['_custom_size_color_6_digit'] = static::getFullURI($f3, "{$base}/666x999/ddeeff");
+		$uris['blankpic_custom_3_digit'] = static::getFullURI($f3, "{$base}/666x999/abc");
+		$uris['blankpic_custom_6_digit'] = static::getFullURI($f3, "{$base}/666x999/ddeeff");
 		$color_example = 'gold';
 		foreach($sizes as $s){
 			$key = "{$base}_{$s}_{$color_example}";
