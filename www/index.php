@@ -66,6 +66,11 @@ class AboutResponder extends Numwal\Responder
 		];
 		return $links;
 	}
+
+    static function getConstraints()
+    {
+        return;
+    }
 }
 
 class BlankPicResponder extends Numwal\Responder
@@ -119,6 +124,13 @@ class BlankPicResponder extends Numwal\Responder
 		return $uris;
 	}
 
+    public static function getConstraints()
+    {
+        $c = [];
+        $c['color-custom-pcre'] = ['[0-9a-fA-F]{3}', '[0-9a-fA-F]{6}'];
+        return $c;
+    }
+
 }
 
 class WallpaperResponder extends Numwal\Responder
@@ -128,7 +140,8 @@ class WallpaperResponder extends Numwal\Responder
 		"description" => "Generate numbered wallpapers.",
 		"feature-1" => "Choose from a range of styles."
 	];
-	protected $wallpaper;
+	protected static $style_info = [];
+    protected $wallpaper;
 
 	public function __construct()
 	{
@@ -152,28 +165,49 @@ class WallpaperResponder extends Numwal\Responder
         }
 	}
 
+    protected static function dumpStyles()
+    {
+        $wp = new Numwal\Wallpaper();
+        $styles = [];
+        foreach($wp->getStyleNames() as $n){
+            $wp->setStyleByName($n);
+            $info = [];
+            $info['max-digits'] = $wp->max_digits;
+            $styles[$n] = $info;
+        }
+        return $styles;
+    }
+
 	public static function getLinks($f3, $options)
 	{
-		$base = static::getPathBase();
-		$wp = new Numwal\Wallpaper();
+        if(!static::$style_info){
+            static::$style_info = static::dumpStyles();
+        }
 		$uris = [];
-		$style_names = $wp->getStyleNames();
-		foreach($style_names as $n){
-			$wp->setStyleByName($n);
-			$n_last = str_repeat("X", $wp->max_digits);
+		foreach(array_keys(static::$style_info) as $sname){
 			// Add link to first wallpaper per style
+            $base = static::getPathBase();
 			$path_1 = str_replace('@number', '0', static::param_pattern);
-			$path_1= str_replace('@style', $n, $path_1);
-			$key_first = "{$base}_{$n}_first";
+			$path_1= str_replace('@style', $sname, $path_1);
+			$key_first = "{$sname}_wp-zero";
 			$uris[$key_first] = static::getFullURI($f3, "{$base}/{$path_1}");
-			// Add link to example wallpapers with maximum digits
-			$path_n= str_replace('@number', $n_last, static::param_pattern);
-			$path_n= str_replace('@style', $n, $path_n);
-			$key_last = "{$base}_{$n}_max_digits";
-			$uris[$key_last] = static::getFullURI($f3, "{$base}/{$path_n}");
 		}
 		return $uris;
 	}
+
+    public static function getConstraints()
+    {
+        if(!static::$style_info){
+            static::$style_info = static::dumpStyles();
+        }
+        $out = [];
+        foreach(array_keys(static::$style_info) as $sname){
+            foreach(array_keys(static::$style_info[$sname]) as $k){
+                $out["{$sname}_{$k}"] = static::$style_info[$sname][$k];
+            }
+        }
+        return $out;
+    }
 }
 
 class HelpResponder extends Numwal\Responder
@@ -197,11 +231,13 @@ class HelpResponder extends Numwal\Responder
 			// PROTIP: Base is NULL when /help route is taken
 			$msgs = static::summary;
 			$uris = static::getLinks($f3, []);
+            $usage = [];
 		}
 		else{
 			$cls = $resps[$b]['class-name'];
 			$msgs = $cls::summary;
 			$uris = $cls::getLinks($f3, []);
+            $usage = $cls::getConstraints();
 		}
         $err = $params['error-message'];
         if($err){
@@ -212,7 +248,7 @@ class HelpResponder extends Numwal\Responder
             $msgs['_debug_level'] = $debug_lvl;
         }
         $msgs['uri-format'] = $cls::getFullURIPattern($f3);
-		$jr = new JSONResponse($msgs, $uris);
+		$jr = new JSONResponse($msgs, $uris, $usage);
 		$jr->respond();
 	}
 
@@ -230,6 +266,11 @@ class HelpResponder extends Numwal\Responder
 		return $uris;
 	}
 
+    public static function getConstraints()
+    {
+        return;
+    }
+
 }
 
 class JSONResponse
@@ -244,13 +285,15 @@ class JSONResponse
 	protected $content_type = "content-type:application/json";
 	protected $http_response_code;
 	protected $messages;
-	protected $links;
+	protected $suggested_links;
+    protected $constraints;
 
-	function __construct($messages, $links, $code=405)
+	function __construct($messages, $links, $constraints, $code=405)
 	{
 		$this->http_response_code = $code;
 		$this->messages = $messages;
 		$this->suggested_links = $links;
+        $this->constraints = $constraints;
 	}
 		
 	function respond()
@@ -268,6 +311,10 @@ class JSONResponse
 			$out[$mn] = $this->messages[$mn];
 		}
 		$out['links'] = $this->suggested_links;
+        $u = $this->constraints;
+        if($u){
+            $out['constraints'] = $u;
+        }
 		header($this->content_type);
 		http_response_code($this->http_response_code);
 		echo json_encode($out);

@@ -44,6 +44,10 @@ abstract class Responder
 	 * an explicit request for usage hints.
 	 */
 
+    abstract public static function getConstraints();
+    /* Get a list of validation requirements for accepted parameters
+    */
+
 	abstract public function respond($f3, $params);
 
 	public static function getPathBase()
