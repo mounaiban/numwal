@@ -44,6 +44,10 @@ class Wallpaper
 	protected $draw;
 	protected $num_x = 32; // position of number
 	protected $num_y = 32; // on wallpaper
+    protected $font_size = 36;
+    protected $font_size_min = 12;
+    protected $font_dsf = 0; // digit shrink factor
+    protected $font_dcsf = 0;
 	protected $px_fill; 
 	protected $styles_dir = 'styles';
 	protected $style_filename = 'style.json';
@@ -72,6 +76,12 @@ class Wallpaper
 		 * the style has been set using setStyle().
 		 */
 		// TODO: Handle case where setStyle() has not been run
+        $shrink = $this->font_dsf * (strlen($number)-1);
+        $fsize = $this->font_size - $this->font_size * $shrink;
+        if($fsize < $this->font_size_min){
+            $fsize = $this->font_size_min;
+        }
+        $this->draw->setFontSize($fsize);
 		$this->draw->annotation($this->num_x, $this->num_y, $number);
 		$this->canvas->drawImage($this->draw);
 	}
@@ -238,14 +248,22 @@ class Wallpaper
 
 		// Set font (only point size is supported)
 		// TODO: Font-setting fallback mechanism could really be improved.
+        // TODO: Clean up this section, storing style data in object
+        //  from setStyleByName() likely needed.
 		if($style_props['font-family'] != NULL){
 			$this->draw->setFontFamily($style_props['font-family']);
 		}
 		elseif($style_props['font-file'] != NULL){
 			$this->draw->setFont($style_props['font-file']);
 		}
-		$this->draw->setFontSize($style_props['font-size-pt']);
+        if($style_props['font-dsf']){
+            $this->font_dsf = $style_props['font-dsf'];
+        }
+        if($style_props['font-size-min-pt']){
+            $this->font_size_min = $style_props['font-size-min-pt'];
+        }
 		$this->draw->setFontWeight($style_props['im-font-weight']);
+        $this->font_size = $style_props['font-size-pt'];
 
 		// Set position
 		$this->draw->setGravity($style_props['im-gravity']);

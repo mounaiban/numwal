@@ -6,8 +6,11 @@
 		"height-px" : 1280
 	},
 	"number" : {
+        "font-dsf": 0.095,
 		"font-size-pt" : 400,
+        "font-size-min-pt": 70,
 		"left-px" : 360,
-		"top-px" : 925 
+		"top-px" : 925,
+        "max-digits": 15
 	}
 }
