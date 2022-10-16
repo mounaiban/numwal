@@ -30,7 +30,7 @@ require 'responder.php';
  */
 $f3 = \Base::instance();
 $f3->set('app_version', '0.6-WIP');
-
+const CACHE_TIME_S = 86400 * 365;
 const DEV_LINKS = [
 	'_github_repo' => 'https://github.com/mounaiban/numwal',
 	'_x11_colors'=> 'https://www.w3.org/TR/css-color-3/#svg-color',
@@ -396,15 +396,26 @@ function getResponderInfoByBase()
 
 function appSetup($f3)
 {
+    $cache_memcached_host = getenv('NUMWAL_MEMCACHED_HOST');
+    if($cache_memcached_host){
+        $f3->set('CACHE', "memcached={$cache_memcached_host}");
+        if(intval(getenv('NUMWAL_MEMCACHED_CLEAR')>0){
+            $f3->clear('CACHE');
+        }
+    }
+    $cache_t = intval(getenv('NUMWAL_CACHE_TIME_S'));
+    if($cache_t <= 0){
+        $cache_t = CACHE_TIME_S;
+    }
 	$resps = getResponderInfo();
 	$cls_names = array_keys($resps);
 	foreach($cls_names as $cls){
 			$fn_name = "{$cls}->respond";
 			$pattern = $resps[$cls]['route-pattern'];
-			$f3->route($pattern, $fn_name);
+			$f3->route($pattern, $fn_name, $cache_t);
 		}
-	$f3->route("GET @default: /@feature*","HelpResponder->respond");
-	$f3->route("GET @index: /","HelpResponder->respond");
+	$f3->route("GET @default: /@feature*","HelpResponder->respond", $cache_t);
+	$f3->route("GET @index: /","HelpResponder->respond", $cache_t);
 }
 
 /**

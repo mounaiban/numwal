@@ -1,0 +1,21 @@
+# Numwal Advanced Multi-container Setup (WIP)
+# For use with docker-compose
+# Run with: docker-compose up -d
+# Not to be mistaken for a Composer project metadata file
+# TODO: restore Nginx and TLS support
+services:
+  numwal:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    environment:
+      NUMWAL_MEMCACHED_CLEAR: ${NUMWAL_MEMCACHED_CLEAR:-0}
+      NUMWAL_MEMCACHED_HOST: memcached
+    ports:
+      - 9080:80
+  memcached:
+    image: memcached:1-alpine
+    deploy:
+      resources:
+        limits:
+          memory: ${NUMWAL_CACHE_SIZE:-128M}
