@@ -399,7 +399,7 @@ function appSetup($f3)
     $cache_memcached_host = getenv('NUMWAL_MEMCACHED_HOST');
     if($cache_memcached_host){
         $f3->set('CACHE', "memcached={$cache_memcached_host}");
-        if(intval(getenv('NUMWAL_MEMCACHED_CLEAR')>0){
+        if(intval(getenv('NUMWAL_MEMCACHED_CLEAR')>0)){
             $f3->clear('CACHE');
         }
     }
