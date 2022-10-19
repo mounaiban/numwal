@@ -14,7 +14,7 @@
 #
 # See: https://github.com/mlocati/docker-php-extension-installer#copying-the-script-from-a-docker-image
 #
-FROM php:7-alpine as base
+FROM php:7-fpm-alpine as base
 COPY --from=docker.io/mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin
 RUN /usr/bin/install-php-extensions imagick && \
     /usr/bin/install-php-extensions @composer
