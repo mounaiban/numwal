@@ -16,6 +16,12 @@ server {
     root /var/www/html/;
     listen ${NUMWAL_HTTP_PORT};
     listen [::]:${NUMWAL_HTTP_PORT};
+    listen ${NUMWAL_HTTPS_PORT} ssl;
+    listen [::]:${NUMWAL_HTTPS_PORT} ssl;
+
+    # Remember to change the certificate and private key filenames as required
+    ssl_certificate /etc/ssl/keys/numwal-cert.pem;
+    ssl_certificate_key /etc/ssl/private/numwal-private.pem;
     
     location / {
         index index.php index.html index.htm;
@@ -28,4 +34,3 @@ server {
         include fastcgi_params;
     }   
 }
-
