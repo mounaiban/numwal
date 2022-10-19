@@ -121,6 +121,84 @@ podman run --rm --name numwal-devc -dp 9080:80 \
     php -S 0.0.0.0:80 index.php
 ```
 
+## Demo Enterprise Deployment
+
+A sample enterprise deployment Docker Compose project file,
+(`compose.yml`) is also available. This project deploys Numwal in a
+triple container setup, running on php-fpm and Nginx, with Memcached.
+
+To deploy, just run `docker-compose up -d`. To shut down and remove
+all containers, run `docker-compose down`.
+
+### Environment Variables
+
+The following settings may be altered without editing any project or
+configuration files, by exporting these environment variables on
+the host:
+
+* `NUMWAL_CACHE_CLEAR`: set to any integer 1 or higher to order the
+  underlying Fat Free Framework to clear caches.
+
+* `NUMWAL_CACHE_SIZE`: sets the amount of memory used by Memcached.
+  Remember to specify the order of magnitude (M, G, maybe T to
+  overkill).
+
+* `NUMWAL_MEMCACHED_HOST`: sets the hostname of the Memcached server.
+
+* `NUMWAL_NGINX_CONFIG`: set to `with-tls` to enable HTTPS support.
+  Remember to have the keys ready, preferably on a secure server,
+  and to modify `numwal-with-tls.config.template` to suit your
+  environment.
+
+  * Alternatively, if self-signed keys are in use, leave the
+    private key in `tls/private/` directory and the public key in
+    the `tls/keys/` directory.
+
+### Setting up Numwal with TLS for HTTPS Support
+
+#### About the `tls/` Directory (Security Alert!)
+
+The `tls/` directory is for use with self-signed test certificates
+only. A production environment should keep TLS keys on a secure
+server in order to avoid copying private keys into images and
+containers.
+
+**Copying private keys increases the risk of a leak, constituting a
+serious incident.**
+
+### Default Ports and Addresses
+
+By default, Numwal listens on port 9080, or 9443 for HTTPS.
+
+### PROTIPS for New Hackers
+
+#### Podman `docker-compose` Support
+
+If you are using Podman (usually on a Fedora host), additional setup
+may be needed to enable `docker-compose` support. Ensure that the
+`podman-docker` scripts and `docker-compose` are installed, and
+enable the Podman socket by running:
+
+```sh
+systemctl --user enable podman.socket  # not always needed
+systemctl --user start podman.socket
+export DOCKER_HOST=unix:///run/user/$UID/podman/podman.sock
+```
+
+The above commands allow `docker-compose` to be used without `sudo`.
+
+#### Choosing Registries for Docker Images
+
+If prompted to choose between multiple available registries,
+`docker.io/` offers the best availability and the widest selection of
+images, at time of writing.
+
+#### Rebuild to Apply Changes
+
+Remember to rebuild the images with `docker-compose build` to apply
+changes to the codebase or configuration files to the deployment.
+
 ## References
 Get Started. Docker Docs. <https://docs.docker.com/get-started/>
 
+Rozek, B. Rootless Docker-Compose with Podman. 2022-02-29 <https://brandonrozek.com/blog/rootless-docker-compose-podman/>

@@ -1,21 +1,52 @@
-# Numwal Advanced Multi-container Setup (WIP)
-# For use with docker-compose
-# Run with: docker-compose up -d
-# Not to be mistaken for a Composer project metadata file
-# TODO: restore Nginx and TLS support
+# Numwal Enterprise Deployment Demo Project (WIP)
+# With PHP FPM, Nginx web server and Memcached
+# For better performance and security
+#
+# For use with docker-compose; run "docker-compose up -d" to setup
+# and run application. Run "docker-compose build" to re-build.
+#
+# To enable TLS/SSL, set the NUMWAL_NGINX_CONFIG environment variable
+# to 'with-tls'. Please see nginx.Dockerfile for details on
+# how this variable is used.
+#
+# NOTE: TLS keys from tls/ are still copied into the container when
+# the no-tls configuration is used
+#
+# To disable memcached, set the NUMWAL_MEMCACHED_HOST environment
+# variable to an empty string (i.e. export NUMWAL_MEMCACHED_HOST='')
+#
+# PROTIP: This file is not be mistaken for the Composer project
+# metadata file, composer.json
 services:
   numwal:
     build:
       context: ./
       dockerfile: ./Dockerfile
+    depends_on:
+      - memcached
     environment:
       NUMWAL_MEMCACHED_CLEAR: ${NUMWAL_MEMCACHED_CLEAR:-0}
-      NUMWAL_MEMCACHED_HOST: memcached
-    ports:
-      - 9080:80
+      NUMWAL_MEMCACHED_HOST: ${NUMWAL_MEMCACHED_HOST-memcached}
+    command: sh -c "php-fpm"
   memcached:
     image: memcached:1-alpine
     deploy:
       resources:
         limits:
           memory: ${NUMWAL_CACHE_SIZE:-128M}
+  nginx:
+    build:
+      args:
+        NUMWAL_NGINX_CONFIG: ${NUMWAL_NGINX_CONFIG:-no-tls}
+      context: ./
+      dockerfile: nginx.Dockerfile
+    depends_on:
+      - numwal
+      - memcached
+    environment:
+      NUMWAL_HTTP_PORT: 8080
+      NUMWAL_HTTPS_PORT: 443
+      NUMWAL_HOST: numwal
+    ports:
+      - 9080:8080
+      - 9443:443
