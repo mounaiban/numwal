@@ -47,4 +47,10 @@ COPY www/ /usr/share/numwal/www/
 STOPSIGNAL SIGTERM
 EXPOSE 9080/tcp
 WORKDIR /usr/share/numwal/www
+# TODO: The tmp/cache directory is needed by F3 when using memcached,
+# find out how to change this directory. The cache directory seems
+# to be changeable only when using filesystem caching.
+RUN mkdir /usr/share/numwal/www/tmp
+RUN mkdir /usr/share/numwal/www/tmp/cache
+RUN chmod 777 /usr/share/numwal/www/tmp/cache
 CMD ["php", "-S", "0.0.0.0:80", "index.php"]
