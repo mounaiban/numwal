@@ -31,6 +31,7 @@ require 'responder.php';
 $f3 = \Base::instance();
 $f3->set('app_version', '0.6-WIP');
 const CACHE_TIME_S = 86400 * 365;
+const CACHE_DSN = 'folder=/tmp/numwal-cache/';
 const DEV_LINKS = [
 	'_github_repo' => 'https://github.com/mounaiban/numwal',
 	'_x11_colors'=> 'https://www.w3.org/TR/css-color-3/#svg-color',
@@ -396,12 +397,13 @@ function getResponderInfoByBase()
 
 function appSetup($f3)
 {
-    $cache_memcached_host = getenv('NUMWAL_MEMCACHED_HOST');
-    if($cache_memcached_host){
-        $f3->set('CACHE', "memcached={$cache_memcached_host}");
-        if(intval(getenv('NUMWAL_MEMCACHED_CLEAR')>0)){
-            $f3->clear('CACHE');
-        }
+    $mc_host = getenv('NUMWAL_MEMCACHED_HOST');
+    $f3->set('CACHE', CACHE_DSN);
+    if($mc_host){
+        $f3->set('CACHE', "memcached={$mc_host}");
+    }
+    if(intval(getenv('NUMWAL_CACHE_CLEAR')>0)){
+        $f3->clear('CACHE');
     }
     $cache_t = intval(getenv('NUMWAL_CACHE_TIME_S'));
     if($cache_t <= 0){
