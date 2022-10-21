@@ -85,6 +85,7 @@ docker pull mlocati/php-extension-installer
 docker build -t numwal-dev --target=numwal-env .
 docker run --rm --name numwal-devc -dp 9080:80 \
     -v "$PWD/www":/usr/share/numwal/www \
+    -w /usr/share/numwal/www \
     numwal-dev \
     php -S 0.0.0.0:80 index.php
 ```
@@ -96,6 +97,7 @@ podman pull docker.io/mlocati/php-extension-installer
 podman build -t numwal-dev --target=numwal-env .
 podman run --rm --name numwal-devc -dp 9080:80 \
     -v "$PWD/www":/usr/share/numwal/www:Z \
+    -w /usr/share/numwal/www \
     localhost/numwal-dev \
     php -S 0.0.0.0:80 index.php
 ```
@@ -116,6 +118,7 @@ example:
 ```sh
 podman run --rm --name numwal-devc -dp 9080:80 \
     -v "$PWD/www":/usr/share/numwal/www:Z \
+    -w /usr/share/numwal/www \
     -e NUMWAL_DEBUG=2 \
     localhost/numwal-dev \
     php -S 0.0.0.0:80 index.php
