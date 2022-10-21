@@ -1,15 +1,13 @@
 # TLS Certificate and Private Key Directory
 
-Place your certificate and private key in this directory, so the image build
-process can find them and insert them into your image.
+Place your public key certificate in the `keys/` directory, and your
+private key in the `private/` directory. Please do this only for
+self-signed test keys.
 
-The Dockerfile expects your certificate (public key) to be named `numwal.pem`
-and your private key to be named `numwal-private.pem`.
+The key URIs may be set using the `NUMWAL_TLS_PUBLIC_KEY_URI` and
+`NUMWAL_TLS_PRIVATE_KEY_URI` environment variables on the host before
+building the containers.
 
-If you wish to use different names for keys, and/or source them from another
-path, please keep the Dockerfile `Dockerfile-nginx-tls` and the Nginx 
-configuration file `numwal-nginx` in sync with these changes.
-
-**PROTIP**: Triple-check your commits before you make them to watch for
-private key leaks!
+**PROTIP**: Triple-check your commits before you make them to watch
+for private key leaks!
 

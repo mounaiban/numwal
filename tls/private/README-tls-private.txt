@@ -1,0 +1,3 @@
+Put private key in this directory...
+Please do this for self-signed test keys only.
+For a more secure setup, use a secure key server.

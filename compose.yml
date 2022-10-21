@@ -47,6 +47,8 @@ services:
       NUMWAL_HTTP_PORT: 8080
       NUMWAL_HTTPS_PORT: 443
       NUMWAL_HOST: numwal
+      NUMWAL_TLS_PUBLIC_KEY_URI: ${NUMWAL_TLS_PUBLIC_KEY_URI:-/etc/ssl/keys/numwal-cert.pem}
+      NUMWAL_TLS_PRIVATE_KEY_URI: ${NUMWAL_TLS_PRIVATE_KEY_URI:-/etc/ssl/private/numwal-private.pem}
     ports:
       - 9080:8080
       - 9443:443

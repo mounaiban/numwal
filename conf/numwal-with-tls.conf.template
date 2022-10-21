@@ -20,9 +20,9 @@ server {
     listen [::]:${NUMWAL_HTTPS_PORT} ssl;
 
     # Remember to change the certificate and private key filenames as required
-    ssl_certificate /etc/ssl/keys/numwal-cert.pem;
-    ssl_certificate_key /etc/ssl/private/numwal-private.pem;
-    
+    ssl_certificate ${NUMWAL_TLS_PUBLIC_KEY_URI};
+    ssl_certificate_key ${NUMWAL_TLS_PRIVATE_KEY_URI};
+
     location / {
         index index.php index.html index.htm;
         try_files $uri /index.php?query_string;

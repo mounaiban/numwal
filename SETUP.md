@@ -139,6 +139,12 @@ The following settings may be altered without editing any project or
 configuration files, by exporting these environment variables on
 the host:
 
+* `NUMWAL_TLS_PRIVATE_KEY_URI`: use this variable to change the URI
+  to the private key in the Nginx server.
+
+* `NUMWAL_TLS_PUBLIC_KEY_URI`: use this variable to change the URI
+  to the public key certificate in the Nginx server.
+
 * `NUMWAL_CACHE_CLEAR`: set to any integer 1 or higher to order the
   underlying Fat Free Framework to clear caches.
 
