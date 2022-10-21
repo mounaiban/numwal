@@ -105,6 +105,9 @@ class BlankPic
             }
 			$width = $s[0];
 			$height = $s[1];
+            if($width<=0 or $height<=0){
+                throw new Exception('Zero width or height not allowed');
+            }
 			// PROTIP: anything after a second x will be ignored
 		}
 		else{
