@@ -29,7 +29,8 @@ require 'responder.php';
  * Fat Free Framework and App Setup
  */
 $f3 = \Base::instance();
-$f3->set('app_version', '0.6-WIP');
+$f3->set('app_version', '0.6.5');
+
 const CACHE_TIME_S = 86400 * 365;
 const CACHE_DSN = 'folder=/tmp/numwal-cache/';
 const DEV_LINKS = [
