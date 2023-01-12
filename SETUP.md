@@ -19,16 +19,16 @@ same directory as `Dockerfile`:
 
 ```sh
 docker pull mlocati/php-extension-installer
-docker build -t numwal:0.6-simple .  # remember the dot
-docker run --rm --name numwal -dp 9080:80 numwal:0.6-simple
+docker build -t numwal:0.7-simple .  # remember the dot
+docker run --rm --name numwal -dp 9080:80 numwal:0.7-simple
 ```
 
 ### Podman
 
 ```sh
 podman pull docker.io/mlocati/php-extension-installer
-podman build -t numwal:0.6-simple .   # remember the dot
-podman run --rm --name numwal -dp 9080:80 localhost/numwal:0.6-simple
+podman build -t numwal:0.7-simple .   # remember the dot
+podman run --rm --name numwal -dp 9080:80 localhost/numwal:0.7-simple
 ```
 
 > TODO: There will be a security warning about running Composer as
@@ -57,12 +57,12 @@ containers:
 
 #### Docker
 ```sh
-docker run --rm --name numwal -dp 9080:80 numwal:0.6-simple
+docker run --rm --name numwal -dp 9080:80 numwal:0.7-simple
 ```
 
 #### Podman
 ```sh
-podman run --rm --name numwal -dp 9080:80 localhost/numwal:0.6-simple
+podman run --rm --name numwal -dp 9080:80 localhost/numwal:0.7-simple
 ```
 
 ## Development Container Deployment

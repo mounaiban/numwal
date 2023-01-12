@@ -29,8 +29,8 @@ require 'responder.php';
  * Fat Free Framework and App Setup
  */
 $f3 = \Base::instance();
-$f3->set('app_version', '0.6.5');
 
+const APP_VERSION = 0.7;
 const CACHE_TIME_S = 86400 * 365;
 const CACHE_DSN = 'folder=/tmp/numwal-cache/';
 const DEV_LINKS = [
@@ -45,10 +45,11 @@ class AboutResponder extends Numwal\Responder
 	 * class-scope code comments in the main module for now...
 	 */
 	public const summary = [
-		'description' => 'Show application information (such as version).',
+		'description' => 'Show application information.',
 		'feature-1' => 'View developer and admin notes.',
 		'feature-2' => 'View copyright and licensing information.',
-		'protip' => 'This merely displays a pretty version of README.md.',
+		'feature-3' => 'This merely displays a pretty version of README.md.',
+		'version' => APP_VERSION,
 	];
 
 	function respond($f3, $params)
@@ -428,6 +429,7 @@ function appSetup($f3)
  *  Start the app.
  */
 appSetup($f3);
+$f3->set('app_version', APP_VERSION);
 $f3->set('DEBUG', intval(getenv('NUMWAL_DEBUG')));
 $f3->run();
 
