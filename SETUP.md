@@ -163,6 +163,10 @@ the host:
     private key in `tls/private/` directory and the public key in
     the `tls/keys/` directory.
 
+PROTIP: Use the `export` command on the host when using docker-compose,
+or the `-e $VAR=$VALUE` option when using the `docker` or `podman`
+command alone.
+
 ### Setting up Numwal with TLS for HTTPS Support
 
 #### About the `tls/` Directory (Security Alert!)
