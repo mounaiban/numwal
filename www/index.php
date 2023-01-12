@@ -34,8 +34,8 @@ $f3->set('app_version', '0.6.5');
 const CACHE_TIME_S = 86400 * 365;
 const CACHE_DSN = 'folder=/tmp/numwal-cache/';
 const DEV_LINKS = [
-	'_github_repo' => 'https://github.com/mounaiban/numwal',
-	'_x11_colors'=> 'https://www.w3.org/TR/css-color-3/#svg-color',
+	'_github-repo' => 'https://github.com/mounaiban/numwal',
+	'_x11-colors'=> 'https://www.w3.org/TR/css-color-3/#svg-color',
 ];
 
 class AboutResponder extends Numwal\Responder
@@ -62,9 +62,8 @@ class AboutResponder extends Numwal\Responder
 	{
 		$path = static::getPathBase();
 		$links = [
-			'about' => static::getFullURI($f3, $path),
-			'_github_repo' => DEV_LINKS['_github_repo'],
-			'_x11_colors' => DEV_LINKS['_x11_colors']
+			'about_uri' => static::getFullURI($f3, $path),
+			'_github-repo_uri' => DEV_LINKS['_github-repo'],
 		];
 		return $links;
 	}
@@ -97,7 +96,7 @@ class BlankPicResponder extends Numwal\Responder
         }
         catch (Exception $e)
         {
-            $params['error-message'] = $e->getMessage();
+            $params['error_message'] = $e->getMessage();
             $params['base'] = static::getPathBase();
             $resp_err = new HelpResponder();
             $resp_err->respond($f3, $params);
@@ -114,23 +113,25 @@ class BlankPicResponder extends Numwal\Responder
 		$sizes = array_keys($bp->getSizeNames());
 		// Insert HxW free size example
 		$base = static::getPathBase();
-		$uris['blankpic_custom_3_digit'] = static::getFullURI($f3, "{$base}/666x999/abc");
-		$uris['blankpic_custom_6_digit'] = static::getFullURI($f3, "{$base}/666x999/ddeeff");
+		$uris["{$base}-666x999-custom-3d-${base}_uri"] = static::getFullURI($f3, "{$base}/666x999/abc");
+		$uris["{$base}-666x999-custom-6d-${base}_uri"] = static::getFullURI($f3, "{$base}/666x999/ddeeff");
 		$color_example = 'gold';
 		foreach($sizes as $s){
-			$key = "{$base}_{$s}_{$color_example}";
+			$key = "{$s}-{$color_example}-${base}_uri";
             $path = "{$base}/{$s}/{$color_example}";
 			$uris[$key] = static::getFullURI($f3, $path);
 		}
-		$uris['_x11_colors'] = DEV_LINKS['_x11_colors'];
+		$uris['_x11-colors_uri'] = DEV_LINKS['_x11-colors'];
 		return $uris;
 	}
 
     public static function getConstraints()
     {
-        $c = [];
-        $c['color-custom-pcre'] = ['[0-9a-fA-F]{3}', '[0-9a-fA-F]{6}'];
-        return $c;
+        return [
+            'color-custom-3d_pcre' => '[0-9a-fA-F]{3}',
+            'color-custom-6d_pcre' => '[0-9a-fA-F]{6}',
+            'size-custom_pcre' => '[0-9]{1,}x[0-9]{1,}',
+        ];
     }
 
 }
@@ -160,7 +161,7 @@ class WallpaperResponder extends Numwal\Responder
         }
         catch (Exception $e)
         {
-            $params['error-message'] = $e->getMessage();
+            $params['error_message'] = $e->getMessage();
             $params['base'] = static::getPathBase();
             $resp_err = new HelpResponder();
             $resp_err->respond($f3, $params);
@@ -174,7 +175,7 @@ class WallpaperResponder extends Numwal\Responder
         foreach($wp->getStyleNames() as $n){
             $wp->setStyleByName($n);
             $info = [];
-            $info['max-digits'] = $wp->max_digits;
+            $info['digits_max'] = $wp->max_digits;
             $styles[$n] = $info;
         }
         return $styles;
@@ -191,7 +192,7 @@ class WallpaperResponder extends Numwal\Responder
             $base = static::getPathBase();
 			$path_1 = str_replace('@number', '0', static::param_pattern);
 			$path_1= str_replace('@style', $sname, $path_1);
-			$key_first = "{$sname}_wp-zero";
+			$key_first = "{$sname}-${base}-zero_uri";
 			$uris[$key_first] = static::getFullURI($f3, "{$base}/{$path_1}");
 		}
 		return $uris;
@@ -202,10 +203,12 @@ class WallpaperResponder extends Numwal\Responder
         if(!static::$style_info){
             static::$style_info = static::dumpStyles();
         }
+        $style_names = array_keys(static::$style_info);
         $out = [];
-        foreach(array_keys(static::$style_info) as $sname){
+        $out["style_choice"] = $style_names;
+        foreach($style_names as $sname){
             foreach(array_keys(static::$style_info[$sname]) as $k){
-                $out["{$sname}_{$k}"] = static::$style_info[$sname][$k];
+                $out["{$sname}-{$k}"] = static::$style_info[$sname][$k];
             }
         }
         return $out;
@@ -241,15 +244,15 @@ class HelpResponder extends Numwal\Responder
 			$uris = $cls::getLinks($f3, []);
             $usage = $cls::getConstraints();
 		}
-        $err = $params['error-message'];
+        $err = $params['error_message'];
         if($err){
-            $msgs['error-message'] = $err;
+            $msgs['error_message'] = $err;
         }
         $debug_lvl = $f3->get('DEBUG');
         if($debug_lvl){
             $msgs['_debug_level'] = $debug_lvl;
         }
-        $msgs['uri-format'] = $cls::getFullURIPattern($f3);
+        $msgs['uri_format'] = $cls::getFullURIPattern($f3);
 		$jr = new JSONResponse($msgs, $uris, $usage);
 		$jr->respond();
 	}
@@ -263,7 +266,7 @@ class HelpResponder extends Numwal\Responder
 		$names = array_keys($resps);
 		foreach($names as $n){
 			$path = str_replace('@feature', $n, $pp);
-			$uris["help-{$n}"] = static::getFullURI($f3, "{$base}/{$path}");
+			$uris["{$n}-help_uri"] = static::getFullURI($f3, "{$base}/{$path}");
 		}
 		return $uris;
 	}
